@@ -6,10 +6,10 @@ from image_processing import func
 if not os.path.exists("data2"):
     os.makedirs("data2")
 if not os.path.exists("data2/train"):
-    os.makedirs("dataluv/train")
+    os.makedirs("data2/train")
 if not os.path.exists("data2/test"):
     os.makedirs("data2/test")
-path="train"
+path="data/train"
 path1 = "data2"
 a=['label']
 
@@ -29,7 +29,7 @@ for (dirpath,dirnames,filenames) in os.walk(path):
     for dirname in dirnames:
         print(dirname)
         for(direcpath,direcnames,files) in os.walk(path+"/"+dirname):
-       	    if not os.path.exists(path1+"/train/"+dirname):
+            if not os.path.exists(path1+"/train/"+dirname):
                 os.makedirs(path1+"/train/"+dirname)
             if not os.path.exists(path1+"/test/"+dirname):
                 os.makedirs(path1+"/test/"+dirname)

@@ -1,9 +1,9 @@
 # Importing the Keras libraries and packages
-from keras.models import Sequential
-from keras.layers import Convolution2D
-from keras.layers import MaxPooling2D
-from keras.layers import Flatten
-from keras.layers import Dense , Dropout
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Convolution2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dense , Dropout
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 sz = 128
@@ -32,7 +32,7 @@ classifier.add(Dropout(0.40))
 classifier.add(Dense(units=96, activation='relu'))
 classifier.add(Dropout(0.40))
 classifier.add(Dense(units=64, activation='relu'))
-classifier.add(Dense(units=27, activation='softmax')) # softmax for more than 2
+classifier.add(Dense(units=3, activation='softmax')) # softmax for more than 2
 
 # Compiling the CNN
 classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy']) # categorical_crossentropy for more than 2
@@ -41,7 +41,7 @@ classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['
 # Step 2 - Preparing the train/test data and training the model
 classifier.summary()
 # Code copied from - https://keras.io/preprocessing/image/
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 train_datagen = ImageDataGenerator(
         rescale=1./255,
@@ -53,21 +53,23 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 
 training_set = train_datagen.flow_from_directory('data2/train',
                                                  target_size=(sz, sz),
-                                                 batch_size=10,
+                                                 batch_size=29,
                                                  color_mode='grayscale',
                                                  class_mode='categorical')
 
 test_set = test_datagen.flow_from_directory('data2/test',
                                             target_size=(sz , sz),
-                                            batch_size=10,
+                                            batch_size=29,
                                             color_mode='grayscale',
                                             class_mode='categorical') 
-classifier.fit_generator(
-        training_set,
-        steps_per_epoch=12841, # No of images in training set
-        epochs=5,
+
+print(training_set)
+
+classifier.fit(
+        training_set, # No of images in training set
+        epochs=10,
         validation_data=test_set,
-        validation_steps=4268)# No of images in test set
+        )# No of images in test set
 
 
 # Saving the model
@@ -75,6 +77,6 @@ model_json = classifier.to_json()
 with open("model-bw.json", "w") as json_file:
     json_file.write(model_json)
 print('Model Saved')
-classifier.save_weights('model-bw.h5')
+classifier.save_weights('model-bw.weights.h5')
 print('Weights saved')
 
